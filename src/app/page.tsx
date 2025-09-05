@@ -1,10 +1,11 @@
-import Navbar from "@/components/Navbar/Navbar";
+import AuthButtons from "@/components/AuthButtons";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <main className="">
-      <Navbar />
-      <h1>Welcome to JobAI Tracker</h1>
-    </main>
+    <div>
+      <Button>Click me</Button>
+      <AuthButtons />
+    </div>
   );
 }
