@@ -1,23 +1,27 @@
-"use client"
+"use client";
 import Image from "next/image";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FileText, ListChecks, Target } from "lucide-react";
 
 const Hero = () => {
   const images = [
     {
       category: "resume-builder",
       label: "AI Resume Builder",
+      icon: <FileText size={20} className="mr-2" />,
       image: "/hero images/ai-reesume-builder.webp",
     },
     {
       category: "job-tracker",
       label: "Job Tracker",
+      icon: <ListChecks size={20} className="mr-2" />,
       image: "/hero images/job-tracker.webp",
     },
     {
       category: "matching-mode",
       label: "Matching Mode",
+      icon: <Target size={20} className="mr-2" />,
       image: "/hero images/matching-mode.webp",
     },
   ];
@@ -46,17 +50,18 @@ const Hero = () => {
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-center space-x-6 mt-12">
+      <div className="flex flex-col sm:flex-row justify-center items-center space-x-6 mt-12">
         {images.map((item) => (
           <button
             key={item.category}
             onClick={() => setActiveCategory(item.category)}
-            className={`px-4 py-2 rounded-md font-semibold transition-all border-b-4 ${
+            className={`px-4 py-2 rounded-md font-semibold transition-all border-b-4 flex items-center ${
               activeCategory === item.category
                 ? "border-[#005149] text-[#005149]"
                 : "border-transparent text-gray-600 hover:text-[#005149]"
             }`}
           >
+            {item.icon}
             {item.label}
           </button>
         ))}
