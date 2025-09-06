@@ -1,3 +1,4 @@
+import AiToolsHighlight from "@/components/AiToolsHighlight/AiToolsHighlight";
 import CoreFeatures from "@/components/Features/Features";
 import Hero from "@/components/Hero/Hero";
 import HowItWorks from "@/components/HowItWorks/HowItWorks";
@@ -10,6 +11,7 @@ export default function Home() {
       <ToolSection />
       <CoreFeatures />
       <HowItWorks />
+      <AiToolsHighlight />
     </main>
   );
 }
