@@ -5,7 +5,7 @@ import {
   AiOutlineFileText,
   AiOutlineCloudUpload,
 } from "react-icons/ai";
-import { FaRegChartBar, FaUserFriends } from "react-icons/fa";
+import { FaUserFriends } from "react-icons/fa";
 import { MdOutlineAnalytics } from "react-icons/md";
 import { GiMagnifyingGlass } from "react-icons/gi";
 
