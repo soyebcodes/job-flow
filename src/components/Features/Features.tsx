@@ -56,7 +56,7 @@ const features = [
 
 const CoreFeatures = () => {
   return (
-    <section className="py-20 bg-[#005149] text-white">
+    <section className="py-20 mt-96 bg-[#005149] text-white">
       <div className="container mx-auto px-6 text-center">
         {/* Section Header */}
         <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white w-2xl text-center mx-auto leading-relaxed">
