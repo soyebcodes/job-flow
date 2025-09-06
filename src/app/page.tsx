@@ -8,8 +8,8 @@ export default function Home() {
     <main className="">
       <Navbar />
       <Hero />
-      <ToolSection></ToolSection>
-      <HowItWorks></HowItWorks>
+      <ToolSection />
+      <HowItWorks />
     </main>
   );
 }
