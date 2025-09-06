@@ -7,7 +7,7 @@ export default function Home() {
     <main className="">
       <Navbar />
       <Hero />
-      <div className=" ">
+      <div className="">
         <CoreFeatures />
       </div>
     </main>
