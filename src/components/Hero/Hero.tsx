@@ -110,7 +110,7 @@ const Hero = () => {
         </div>
 
         {/* Image */}
-        <div className="mt-10 flex justify-center">
+        <div className="mt-10 flex justify-center border-b">
           <AnimatePresence mode="wait">
             {images
               .filter((item) => item.category === activeCategory)
