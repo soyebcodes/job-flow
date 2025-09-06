@@ -3,18 +3,47 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { JobForm } from "@/types/job";
 import AddJobModal from "./AddJobModal";
 import { signIn, useSession } from "next-auth/react";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<JobForm[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<JobForm[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const { data: session, status } = useSession();
 
   useEffect(() => {
     if (session) fetchJobs();
   }, [session]);
+
+  useEffect(() => {
+    let filtered = jobs;
+
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((job) => job.status === statusFilter);
+    }
+
+    if (searchTerm.trim()) {
+      filtered = filtered.filter(
+        (job) =>
+          job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          job.position.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredJobs(filtered);
+  }, [jobs, statusFilter, searchTerm]);
 
   const fetchJobs = async () => {
     try {
@@ -70,8 +99,9 @@ export default function JobsPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-3xl font-bold text-zinc-800 dark:text-zinc-100">
           Submitted Job Applications
         </h1>
@@ -83,29 +113,55 @@ export default function JobsPage() {
         </Button>
       </div>
 
+      {/* Filters */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <Input
+          placeholder="Search by company or position..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/2"
+        />
+        <Select
+          onValueChange={(val) => setStatusFilter(val)}
+          defaultValue="all"
+        >
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="applied">Applied</SelectItem>
+            <SelectItem value="interviewing">Interviewing</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Job List */}
       <div className="space-y-4">
-        {jobs.length === 0 ? (
+        {filteredJobs.length === 0 ? (
           <div className="text-center py-12 text-zinc-600 dark:text-zinc-300 border rounded-lg">
             <p className="text-lg font-medium">No job applications found.</p>
             <p className="mt-2">
-              Click &quot;Add Job&quot; to submit your first application!
+              Try adjusting your filters or click &quot;Add Job&quot; to submit
+              your first application!
             </p>
           </div>
         ) : (
-          jobs.map((job, idx) => (
+          filteredJobs.map((job, idx) => (
             <div
               key={idx}
-              className="border border-zinc-300 dark:border-zinc-700 p-4 rounded-lg shadow-sm transition hover:shadow-md"
+              className="border border-zinc-300 dark:border-zinc-700 p-5 rounded-xl shadow-sm transition hover:shadow-md bg-white dark:bg-zinc-900"
             >
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-                {job.position} @ {job.company}
-              </h2>
-              <Badge
-                className={`${getStatusColor(job.status)} text-white mt-2`}
-              >
-                {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-              </Badge>
-              <p className="mt-2 text-zinc-700 dark:text-zinc-300">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg md:text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+                  {job.position} @ {job.company}
+                </h2>
+                <Badge className={`${getStatusColor(job.status)} text-white`}>
+                  {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                </Badge>
+              </div>
+              <p className="mt-3 text-zinc-700 dark:text-zinc-300">
                 {job.description}
               </p>
             </div>
@@ -113,6 +169,7 @@ export default function JobsPage() {
         )}
       </div>
 
+      {/* Modal */}
       {showModal && (
         <AddJobModal
           onClose={() => setShowModal(false)}
