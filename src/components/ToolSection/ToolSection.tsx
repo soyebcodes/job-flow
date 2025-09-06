@@ -164,7 +164,7 @@ const ToolSection = () => {
               ></Image>
             </motion.div>
           </div>
-
+          
           <div
             id="tracker" // Added ID for IntersectionObserver
             ref={trackerRef}
