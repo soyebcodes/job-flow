@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import type { NextAuthOptions } from "next-auth";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
@@ -23,9 +24,25 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
+    async jwt({ token }) {
+      // nothing extra here yet, but we could attach custom claims if needed
+      return token;
+    },
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
+
+        // Mint Supabase-compatible JWT
+        const supabaseAccessToken = jwt.sign(
+          {
+            sub: token.sub, // NextAuth user id
+            email: session.user.email,
+          },
+          process.env.SUPABASE_JWT_SECRET!, // must match Supabase project JWT_SECRET
+          { expiresIn: "1h" }
+        );
+
+        session.supabaseAccessToken = supabaseAccessToken;
       }
       return session;
     },
