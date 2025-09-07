@@ -71,6 +71,41 @@ export default function ResumeManagerPage() {
     }
   };
 
+  const handleDelete = async (resumeId: string) => {
+    if (!confirm("Are you sure you want to delete this resume?")) return;
+
+    try {
+      const res = await fetch("/api/resume/delete", {
+        method: "POST",
+        body: JSON.stringify({ resumeId }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setResumes(resumes.filter((r) => r.id !== resumeId));
+      } else {
+        alert(data.error || "Failed to delete resume");
+      }
+    } catch (err: any) {
+      alert(err.message || "Failed to delete resume");
+    }
+  };
+
+  const handleAnalyze = async (resumeId: string) => {
+    try {
+      const res = await fetch("/api/resume/analyze", {
+        method: "POST",
+        body: JSON.stringify({ resumeId }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.analysis) alert(data.analysis);
+      else alert(data.error || "Analysis failed");
+    } catch (err: any) {
+      alert(err.message || "Analysis failed");
+    }
+  };
+
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -172,18 +207,26 @@ export default function ResumeManagerPage() {
                         href={resume.url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        download
                       >
-                        View
-                      </a>
-                    </Button>
-                    <Button
-                      asChild
-                      size="sm"
-                      className="bg-purple-600 hover:bg-purple-700 text-white"
-                    >
-                      <a href={resume.url} download>
                         Download
                       </a>
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                      onClick={() => handleDelete(resume.id)}
+                    >
+                      Delete
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                      onClick={() => handleAnalyze(resume.id)}
+                    >
+                      Analyze AI
                     </Button>
                   </CardContent>
                 </Card>
