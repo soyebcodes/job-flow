@@ -10,10 +10,10 @@ export default function Home() {
     <main className="">
       <Hero />
       <ToolSection />
-      <JobSearch />
-      <CoreFeatures />
-      <HowItWorks />
       <AiToolsHighlight />
+      <CoreFeatures />
+      <JobSearch />
+      <HowItWorks />
     </main>
   );
 }
