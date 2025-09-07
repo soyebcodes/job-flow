@@ -10,7 +10,7 @@ export default function ResumeUpload() {
     setUploading(true);
 
     const formData = new FormData(e.currentTarget);
-    const res = await fetch("/api/resume/upload", {
+    const res = await fetch("/api/resume", {
       method: "POST",
       body: formData,
     });
@@ -38,7 +38,7 @@ export default function ResumeUpload() {
       </button>
       {url && (
         <p className="text-sm text-green-600">
-          ✅ Uploaded:{" "}
+          Uploaded:{" "}
           <a href={url} target="_blank">
             View Resume
           </a>

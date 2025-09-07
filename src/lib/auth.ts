@@ -25,20 +25,18 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token }) {
-      // nothing extra here yet, but we could attach custom claims if needed
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
 
-        // Mint Supabase-compatible JWT
         const supabaseAccessToken = jwt.sign(
           {
-            sub: token.sub, // NextAuth user id
+            sub: token.sub,
             email: session.user.email,
           },
-          process.env.SUPABASE_JWT_SECRET!, // must match Supabase project JWT_SECRET
+          process.env.SUPABASE_JWT_SECRET!,
           { expiresIn: "1h" }
         );
 

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
-    // Generate signed URL (valid 1 hour)
+    // Generate signed URl
     const { data: signedUrlData, error: signedUrlError } =
       await supabaseServer.storage
         .from("resumes")
@@ -65,11 +65,11 @@ export async function POST(req: Request) {
 
     const signedData: SignedUrlData = signedUrlData;
 
-    // Save resume metadata in Prisma
+    // Save resume data in Prisma
     await prisma.resume.create({
       data: {
         user: { connect: { id: session.user.id } },
-        fileUrl: filePath, // store path, signed URL used for access
+        fileUrl: filePath,
       },
     });
 
