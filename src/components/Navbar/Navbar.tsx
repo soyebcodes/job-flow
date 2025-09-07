@@ -12,7 +12,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { name: "AI Resume Builder", href: "/resume-builder" },
+    { name: "AI Resume Builder", href: "/resumes" },
     { name: "Job Application Tracker", href: "/jobs" },
     { name: "Resources", href: "" },
   ];

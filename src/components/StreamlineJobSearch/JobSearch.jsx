@@ -1,5 +1,5 @@
-"use client"
-import { motion} from "framer-motion";
+"use client";
+import { motion } from "framer-motion";
 const JobSearch = () => {
   const steps = [
     {
@@ -48,7 +48,7 @@ const JobSearch = () => {
   };
 
   return (
-    <section className="bg-white py-16 mt-96">
+    <section className="bg-white py-16 mt-8">
       <div className="max-w-7xl mx-auto px-6 text-center">
         {/* Title */}
         <h2 className="text-3xl lg:text-5xl font-semibold mb-20">
@@ -58,8 +58,13 @@ const JobSearch = () => {
         {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 xl:gap-30 gap-16 ">
           {steps.map((step) => (
-            <div key={step.id} className="flex flex-col items-center gap-4 relative">
-                <span className=" absolute -top-5 bg-[#005149] text-white p-3 w-10 h-10 flex justify-center items-center rounded-full font-bold">{step.id}</span>
+            <div
+              key={step.id}
+              className="flex flex-col items-center gap-4 relative"
+            >
+              <span className=" absolute -top-5 bg-[#005149] text-white p-3 w-10 h-10 flex justify-center items-center rounded-full font-bold">
+                {step.id}
+              </span>
               <div className="mb-4">
                 <img
                   src={step.image}
