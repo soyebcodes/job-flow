@@ -60,6 +60,7 @@ export default function ResumeManagerPage() {
       const res = await fetch("/api/resume/upload", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
       const data = await res.json();
 
@@ -104,6 +105,7 @@ export default function ResumeManagerPage() {
         method: "POST",
         body: JSON.stringify({ resumeId }),
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
       });
       const data = await res.json();
       if (data.analysis) {

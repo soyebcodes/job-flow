@@ -4,22 +4,23 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-interface SignedUrlData {
-  signedUrl: string;
-  expiresAt?: string;
-}
-
 // Server-side Supabase client using SERVICE ROLE key
 const supabaseServer: SupabaseClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+interface SignedUrlData {
+  signedUrl: string;
+  expiresAt?: string;
+}
+
 export async function POST(req: Request) {
   try {
     // Get NextAuth session
     const session = await getServerSession(authOptions);
 
+    // Guard: make sure user and id exist
     if (!session?.user?.id || !session.user.email) {
       return NextResponse.json(
         { error: "Unauthorized. Session missing." },
@@ -27,7 +28,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // Get uploaded file
+    const userId: string = session.user.id;
+
+    // Parse uploaded file
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
 
@@ -35,10 +38,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // Unique file path -> every user
-    const filePath = `resumes/${session.user.id}-${Date.now()}.pdf`;
+    // Unique file path
+    const filePath = `resumes/${userId}-${Date.now()}.pdf`;
 
-    // Upload file using service role key
+    // Upload using service role
     const { error: uploadError } = await supabaseServer.storage
       .from("resumes")
       .upload(filePath, file, {
@@ -50,7 +53,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
-    // Generate signed URl
+    // Generate signed URL
     const { data: signedUrlData, error: signedUrlError } =
       await supabaseServer.storage
         .from("resumes")
@@ -65,10 +68,10 @@ export async function POST(req: Request) {
 
     const signedData: SignedUrlData = signedUrlData;
 
-    // Save resume data in Prisma
+    // Save resume record in Prisma
     await prisma.resume.create({
       data: {
-        user: { connect: { id: session.user.id } },
+        user: { connect: { id: userId } },
         fileUrl: filePath,
       },
     });
