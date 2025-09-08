@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FileText, BarChart2 } from "lucide-react";
 import Image from "next/image";
-import { useAnimation, useInView, motion } from "framer-motion";
+import { useAnimation, useInView, motion, easeOut } from "framer-motion";
 
 const ToolSection = () => {
   const resumeRef = useRef<HTMLDivElement | null>(null);
@@ -35,7 +35,10 @@ const ToolSection = () => {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: {
+        duration: 0.6,
+        ease: easeOut, // ✅ use imported easing function
+      },
     },
   };
 
