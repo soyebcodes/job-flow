@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { position, companyName, status, description } = body;
+  const { position, status, company, description } = body;
 
   try {
     const user = await prisma.user.findUnique({
@@ -23,8 +23,9 @@ export async function POST(req: Request) {
     const job = await prisma.job.create({
       data: {
         position,
-        company: companyName,
+        company,
         status,
+        description,
         userId: user.id,
         createdAt: new Date(),
       },

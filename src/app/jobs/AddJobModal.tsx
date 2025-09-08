@@ -33,7 +33,6 @@ export default function AddJobModal({
   const [formData, setFormData] = useState<JobForm>({
     position: "",
     company: "",
-    companyName: "",
     status: "applied",
     description: "",
   });
@@ -89,11 +88,11 @@ export default function AddJobModal({
             />
           </div>
           <div>
-            <Label htmlFor="companyName">Company Name</Label>
+            <Label htmlFor="company">Company Name</Label>
             <Input
-              id="companyName"
-              value={formData.companyName}
-              onChange={(e) => handleChange("companyName", e.target.value)}
+              id="company"
+              value={formData.company}
+              onChange={(e) => handleChange("company", e.target.value)}
               required
             />
           </div>
@@ -126,6 +125,7 @@ export default function AddJobModal({
               value={formData.description}
               onChange={(e) => handleChange("description", e.target.value)}
               required
+              className="h-32 resize-none overflow-auto"
             />
           </div>
           <Button

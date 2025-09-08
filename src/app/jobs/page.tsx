@@ -13,12 +13,15 @@ import {
 } from "@/components/ui/select";
 import { JobForm } from "@/types/job";
 import AddJobModal from "./AddJobModal";
+import MatchModal from "./MatchModal";
 import { signIn, useSession } from "next-auth/react";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<JobForm[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<JobForm[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showMatchModal, setShowMatchModal] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const { data: session, status } = useSession();
@@ -66,6 +69,11 @@ export default function JobsPage() {
       default:
         return "bg-gray-400";
     }
+  };
+
+  const handleMatchClick = (jobId: string) => {
+    setSelectedJobId(jobId);
+    setShowMatchModal(true);
   };
 
   if (status === "loading") {
@@ -153,7 +161,7 @@ export default function JobsPage() {
               key={idx}
               className="border border-zinc-300 dark:border-zinc-700 p-5 rounded-xl shadow-sm transition hover:shadow-md bg-white dark:bg-zinc-900"
             >
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
                 <h2 className="text-lg md:text-xl font-semibold text-zinc-900 dark:text-zinc-100">
                   {job.position} @ {job.company}
                 </h2>
@@ -164,17 +172,34 @@ export default function JobsPage() {
               <p className="mt-3 text-zinc-700 dark:text-zinc-300">
                 {job.description}
               </p>
+              <div className="mt-4 flex justify-end">
+                <Button
+                  onClick={() => handleMatchClick(job.id)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Match Resume
+                </Button>
+              </div>
             </div>
           ))
         )}
       </div>
 
-      {/* Modal */}
+      {/* Add Job Modal */}
       {showModal && (
         <AddJobModal
           onClose={() => setShowModal(false)}
           onJobAdded={fetchJobs}
           open={showModal}
+        />
+      )}
+
+      {/* Match Modal */}
+      {showMatchModal && selectedJobId && (
+        <MatchModal
+          open={showMatchModal}
+          onClose={() => setShowMatchModal(false)}
+          jobId={selectedJobId}
         />
       )}
     </div>

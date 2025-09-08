@@ -54,13 +54,14 @@ model VerificationToken {
 }
 
 model Job {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  company   String
-  position  String
-  status    String  
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  company     String
+  position    String
+  status      String
+  description String
+  createdAt   DateTime @default(now())
 }
 
 model Resume {

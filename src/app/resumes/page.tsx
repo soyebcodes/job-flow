@@ -49,10 +49,11 @@ export default function ResumeManagerPage() {
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget; // Save reference before async
     setUploading(true);
     setMessage(null);
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(form);
 
     try {
       const res = await fetch("/api/resume/upload", {
@@ -71,10 +72,9 @@ export default function ResumeManagerPage() {
       setMessage(err.message || "Upload failed");
     } finally {
       setUploading(false);
-      e.currentTarget.reset();
+      form.reset(); // Use saved reference
     }
   };
-
   const handleDelete = async (resumeId: string) => {
     if (!confirm("Are you sure you want to delete this resume?")) return;
 
