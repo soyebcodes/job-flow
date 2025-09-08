@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { signIn, useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
+import AnalysisModal from "@/components/AnalysisModal/AnalysisModal";
 
 interface Resume {
   id: string;
@@ -19,6 +20,9 @@ export default function ResumeManagerPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     if (session) fetchResumes();
@@ -92,6 +96,8 @@ export default function ResumeManagerPage() {
   };
 
   const handleAnalyze = async (resumeId: string) => {
+    setAnalyzingId(resumeId);
+    setAnalysisResult(null);
     try {
       const res = await fetch("/api/resume/analyze", {
         method: "POST",
@@ -99,10 +105,16 @@ export default function ResumeManagerPage() {
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
-      if (data.analysis) alert(data.analysis);
-      else alert(data.error || "Analysis failed");
+      if (data.analysis) {
+        setAnalysisResult(data.analysis);
+        setModalOpen(true);
+      } else {
+        alert(data.error || "Analysis failed");
+      }
     } catch (err: any) {
       alert(err.message || "Analysis failed");
+    } finally {
+      setAnalyzingId(null);
     }
   };
 
@@ -225,8 +237,11 @@ export default function ResumeManagerPage() {
                       size="sm"
                       className="bg-indigo-600 hover:bg-indigo-700 text-white"
                       onClick={() => handleAnalyze(resume.id)}
+                      disabled={analyzingId === resume.id}
                     >
-                      Analyze AI
+                      {analyzingId === resume.id
+                        ? "Analyzing..."
+                        : "Analyze AI"}
                     </Button>
                   </CardContent>
                 </Card>
@@ -234,6 +249,13 @@ export default function ResumeManagerPage() {
             ))}
           </AnimatePresence>
         </div>
+      )}
+      {analysisResult && (
+        <AnalysisModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          content={analysisResult}
+        />
       )}
     </div>
   );
