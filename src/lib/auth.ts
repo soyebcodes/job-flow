@@ -7,16 +7,31 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  throw new Error("Missing Google OAuth credentials");
+}
+if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
+  throw new Error("Missing GitHub OAuth credentials");
+}
+if (!process.env.NEXTAUTH_SECRET || !process.env.SUPABASE_JWT_SECRET) {
+  throw new Error("Missing required secrets");
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: "openid email profile",
+        },
+      },
     }),
     GitHubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -45,4 +60,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  debug: true,
 };
