@@ -12,41 +12,49 @@ const ToolSection = () => {
   const [activeTab, setActiveTab] = useState("resume");
 
   //refs for observing image visibility
-  const resumeImageRef = useRef(null)
-  const trackerImageRef = useRef(null)
+  const resumeImageRef = useRef(null);
+  const trackerImageRef = useRef(null);
 
   //useInView hooks to detect when image are in view
-  const isResumeImageInView = useInView(resumeImageRef, {once: false, amount: 0.3})
-  const isTrackerImageInView = useInView(trackerImageRef, {once: false, amount: 0.3})
+  const isResumeImageInView = useInView(resumeImageRef, {
+    once: false,
+    amount: 0.3,
+  });
+  const isTrackerImageInView = useInView(trackerImageRef, {
+    once: false,
+    amount: 0.3,
+  });
 
-   // Animation controls for each image
+  // Animation controls for each image
   const resumeControls = useAnimation();
   const trackerControls = useAnimation();
 
   //animation controls for sliding in from the right
   const slideInVariants = {
-    hidden: {opacity: 0, x:200},
-    visible:{opacity: 1, x:0, transition: {duration: 0.6, ease: 'easeOut'}}
-  }
+    hidden: { opacity: 0, x: 200 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
 
   //trigger
-  useEffect(() =>{
-    if(isResumeImageInView){
-      resumeControls.start("visible")
+  useEffect(() => {
+    if (isResumeImageInView) {
+      resumeControls.start("visible");
+    } else {
+      resumeControls.start("hidden");
     }
-    else{
-      resumeControls.start('hidden')
-    }
-  }, [isResumeImageInView, resumeControls])
+  }, [isResumeImageInView, resumeControls]);
 
-  useEffect(() =>{
-    if(isTrackerImageInView){
-      trackerControls.start('visible')
+  useEffect(() => {
+    if (isTrackerImageInView) {
+      trackerControls.start("visible");
+    } else {
+      trackerControls.start("hidden");
     }
-    else{
-      trackerControls.start('hidden')
-    }
-  }, [isTrackerImageInView, trackerControls])
+  }, [isTrackerImageInView, trackerControls]);
 
   // This effect will observe which section is in view and update the active tab
   useEffect(() => {
@@ -78,7 +86,10 @@ const ToolSection = () => {
   }, []);
 
   // Scroll function that also sets the active tab
-  const scrollToSection = (ref, tabName) => {
+  const scrollToSection = (
+    ref: React.RefObject<HTMLElement>,
+    tabName: string
+  ) => {
     setActiveTab(tabName);
     ref.current?.scrollIntoView({
       behavior: "smooth",
@@ -138,7 +149,9 @@ const ToolSection = () => {
                 Quickly tailor your resume <br /> for each job with AI
               </h2>
               <p className="lg:text-gray-600 mb-8 max-w-lg text-white">
-                Use the right keywords from job descriptions to highlight your qualifications on your resume. Get recommendations to improve your resume and land more interviews.
+                Use the right keywords from job descriptions to highlight your
+                qualifications on your resume. Get recommendations to improve
+                your resume and land more interviews.
               </p>
               <div className="text-center lg:text-left">
                 <button className="bg-[#f5b501] hover:shadow-lg hover:scale-105 text-black font-semibold px-6 py-3 rounded-full transition-all duration-200">
@@ -164,7 +177,7 @@ const ToolSection = () => {
               ></Image>
             </motion.div>
           </div>
-          
+
           <div
             id="tracker" // Added ID for IntersectionObserver
             ref={trackerRef}
@@ -189,7 +202,7 @@ const ToolSection = () => {
             </div>
 
             {/* Right side - Job Tracker Card */}
-             <motion.div
+            <motion.div
               ref={trackerImageRef}
               variants={slideInVariants}
               initial="hidden"
