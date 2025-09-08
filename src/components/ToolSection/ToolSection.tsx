@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useAnimation, useInView, motion } from "framer-motion";
 
 const ToolSection = () => {
-  const resumeRef = useRef(null);
-  const trackerRef = useRef(null);
+  const resumeRef = useRef<HTMLElement>(null);
+  const trackerRef = useRef<HTMLElement>(null);
 
   // State to track the active tab
   const [activeTab, setActiveTab] = useState("resume");
@@ -87,7 +87,7 @@ const ToolSection = () => {
 
   // Scroll function that also sets the active tab
   const scrollToSection = (
-    ref: React.RefObject<HTMLElement>,
+    ref: React.RefObject<HTMLElement | null>,
     tabName: string
   ) => {
     setActiveTab(tabName);
@@ -97,7 +97,6 @@ const ToolSection = () => {
       inline: "nearest",
     });
   };
-
   return (
     <>
       <section className="relative mt-20">
