@@ -52,7 +52,7 @@ export default function AnalysisModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-w-xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>AI Resume Suggestions</DialogTitle>
         </DialogHeader>

@@ -17,12 +17,12 @@ interface Resume {
 export default function ResumeManagerPage() {
   const { data: session, status } = useSession();
   const [resumes, setResumes] = useState<Resume[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [uploading, setUploading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
   const [analyzingId, setAnalyzingId] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (session) fetchResumes();
@@ -36,7 +36,8 @@ export default function ResumeManagerPage() {
         setMessage("Please sign in to view your resumes.");
         setResumes([]);
       } else {
-        const data = await res.json();
+        const data: { resumes: Resume[] } = await res.json();
+
         if (data.resumes) setResumes(data.resumes);
         else setMessage("No resumes found.");
       }
@@ -49,7 +50,7 @@ export default function ResumeManagerPage() {
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget; // Save reference before async
+    const form = e.currentTarget;
     setUploading(true);
     setMessage(null);
 
@@ -72,7 +73,7 @@ export default function ResumeManagerPage() {
       setMessage(err.message || "Upload failed");
     } finally {
       setUploading(false);
-      form.reset(); // Use saved reference
+      form.reset();
     }
   };
   const handleDelete = async (resumeId: string) => {

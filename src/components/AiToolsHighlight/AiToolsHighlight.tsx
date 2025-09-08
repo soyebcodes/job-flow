@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { GiMagnifyingGlass } from "react-icons/gi";
 import { FaBrain, FaArrowRight, FaCheck, FaTimes } from "react-icons/fa";
 import { AiOutlineStar } from "react-icons/ai";
 import { GiBullseye } from "react-icons/gi";
@@ -20,7 +19,6 @@ const AiToolsHighlight = () => {
           <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
             Smart Tools That Get You
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {" "}
               Hired Faster
             </span>
           </h2>

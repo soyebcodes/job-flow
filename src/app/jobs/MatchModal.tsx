@@ -22,12 +22,17 @@ interface MatchModalProps {
   jobId: string;
 }
 
+interface Resume {
+  id: string;
+  name?: string;
+}
+
 export default function MatchModal({ open, onClose, jobId }: MatchModalProps) {
-  const [resumes, setResumes] = useState<any[]>([]);
+  const [resumes, setResumes] = useState<Resume[]>([]);
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (open) fetchResumes();
@@ -35,8 +40,8 @@ export default function MatchModal({ open, onClose, jobId }: MatchModalProps) {
 
   const fetchResumes = async () => {
     const res = await fetch("/api/resume");
-    const data = await res.json();
-    setResumes(data.resumes || []); // Safely fallback to empty array
+    const data: { resumes: Resume[] } = await res.json();
+    setResumes(data.resumes || []);
   };
 
   const handleMatch = async () => {
