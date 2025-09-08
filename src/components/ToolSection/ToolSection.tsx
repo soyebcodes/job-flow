@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useAnimation, useInView, motion } from "framer-motion";
 
 const ToolSection = () => {
-  const resumeRef = useRef<HTMLElement>(null);
-  const trackerRef = useRef<HTMLElement>(null);
+  const resumeRef = useRef<HTMLDivElement | null>(null);
+  const trackerRef = useRef<HTMLDivElement | null>(null);
 
   // State to track the active tab
   const [activeTab, setActiveTab] = useState("resume");
