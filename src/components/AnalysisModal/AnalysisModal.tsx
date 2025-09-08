@@ -20,22 +20,34 @@ export default function AnalysisModal({
   onClose,
   content,
 }: AnalysisModalProps) {
-  // Split content into numbered suggestions
   const suggestions = content
     .split(/\d+\.\s+/)
     .filter(Boolean)
     .map((s) => s.trim());
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    setCopied(false);
   };
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
       prev < suggestions.length - 1 ? prev + 1 : prev
     );
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(suggestions[currentIndex]);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
   };
 
   return (
@@ -68,6 +80,12 @@ export default function AnalysisModal({
             variant="outline"
           >
             Next ▶
+          </Button>
+        </div>
+
+        <div className="mt-2 flex justify-end items-center gap-2">
+          <Button onClick={handleCopy} variant="secondary" className="text-sm">
+            {copied ? "Copied!" : "Copy Suggestion"}
           </Button>
         </div>
 
