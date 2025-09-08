@@ -2,9 +2,10 @@
 CREATE TABLE "public"."User" (
     "id" TEXT NOT NULL,
     "name" TEXT,
-    "email" TEXT,
+    "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
+    "password" TEXT NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -51,6 +52,7 @@ CREATE TABLE "public"."Job" (
     "company" TEXT NOT NULL,
     "position" TEXT NOT NULL,
     "status" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
