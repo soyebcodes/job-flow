@@ -59,7 +59,7 @@ model Job {
   user      User     @relation(fields: [userId], references: [id])
   company   String
   position  String
-  status    String   // "Applied", "Interview", "Rejected"
+  status    String  
   createdAt DateTime @default(now())
 }
 

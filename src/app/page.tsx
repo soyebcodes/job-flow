@@ -1,11 +1,19 @@
+import AiToolsHighlight from "@/components/AiToolsHighlight/AiToolsHighlight";
+import CoreFeatures from "@/components/Features/Features";
 import Hero from "@/components/Hero/Hero";
-import Navbar from "@/components/Navbar/Navbar";
+import HowItWorks from "@/components/HowItWorks/HowItWorks";
+import ToolSection from "@/components/ToolSection/ToolSection";
+import JobSearch from "@/components/StreamlineJobSearch/JobSearch";
 
 export default function Home() {
   return (
     <main className="">
-      <Navbar />
       <Hero />
+      <ToolSection />
+      <AiToolsHighlight />
+      <CoreFeatures />
+      <JobSearch />
+      <HowItWorks />
     </main>
   );
 }
