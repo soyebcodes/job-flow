@@ -21,6 +21,13 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
+export interface JobInput {
+  company: string;
+  position: string;
+  status: "applied" | "interviewing" | "rejected";
+  description: string;
+}
+
 export default function AddJobModal({
   open,
   onClose,
@@ -30,7 +37,7 @@ export default function AddJobModal({
   onClose: () => void;
   onJobAdded: () => void;
 }) {
-  const [formData, setFormData] = useState<JobForm>({
+  const [formData, setFormData] = useState<JobInput>({
     position: "",
     company: "",
     status: "applied",
