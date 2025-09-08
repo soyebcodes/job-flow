@@ -9,6 +9,12 @@ const supabaseServer = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+interface Resume {
+  id: string;
+  createdAt: Date;
+  fileUrl: string;
+}
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -23,7 +29,7 @@ export async function GET() {
     });
 
     const signedResumes = await Promise.all(
-      resumes.map(async (resume) => {
+      resumes.map(async (resume: Resume) => {
         const { data } = await supabaseServer.storage
           .from("resumes")
           .createSignedUrl(resume.fileUrl, 60 * 60);
