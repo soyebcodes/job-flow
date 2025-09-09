@@ -239,7 +239,7 @@ export default function Navbar() {
               </nav>
 
               {/* Theme Toggle Mobile */}
-              <div className="mt-4 pt-4 border-t flex justify-center space-x-2">
+              <div className="mt-4 pt-4 border-t flex justify-center flex-wrap gap-2">
                 <Button
                   variant={theme === "light" ? "default" : "ghost"}
                   size="sm"
@@ -267,7 +267,7 @@ export default function Navbar() {
               </div>
 
               {/* Auth Section Mobile */}
-              <div className="mt-4 pt-4 border-t space-y-3">
+              <div className="mt-4 pt-4 border-t flex flex-col items-center gap-2">
                 {isSignedIn ? (
                   <>
                     <div className="flex items-center space-x-3">
@@ -279,7 +279,7 @@ export default function Navbar() {
                     <SignOutButton>
                       <Button
                         variant="outline"
-                        className="w-full bg-transparent"
+                        className="w-full max-w-xs bg-transparent"
                         onClick={() => setIsOpen(false)}
                       >
                         Sign Out
@@ -287,7 +287,7 @@ export default function Navbar() {
                     </SignOutButton>
                   </>
                 ) : (
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col items-center gap-2 w-full max-w-xs">
                     <SignInButton>
                       <Button
                         variant="ghost"
