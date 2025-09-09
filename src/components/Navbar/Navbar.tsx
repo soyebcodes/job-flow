@@ -37,10 +37,10 @@ export default function Navbar() {
   const { isSignedIn, user } = useUser();
 
   const homeLinks = [
-    { name: "Tools", href: "#tools", icon: ToolCaseIcon },
-    { name: "How it Works", href: "#how-it-works", icon: Info },
-    { name: "Highlight", href: "#highlight", icon: Star },
-    { name: "Job Search", href: "#job-search", icon: Search },
+    { name: "Tools", href: "/#tools", icon: ToolCaseIcon },
+    { name: "How it Works", href: "/#how-it-works", icon: Info },
+    { name: "Highlight", href: "/#highlight", icon: Star },
+    { name: "Job Search", href: "/#job-search", icon: Search },
   ];
 
   const navLinks = [
@@ -69,6 +69,7 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
@@ -83,6 +84,7 @@ export default function Navbar() {
 
           {/* Desktop Links */}
           <nav className="hidden lg:flex items-center space-x-1">
+            {/* Main nav */}
             {navLinks.map((link) => {
               const Icon = link.icon;
               return (
@@ -90,6 +92,7 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   className="group relative flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
+                  scroll={false}
                 >
                   <Icon className="h-4 w-4" />
                   <span>{link.name}</span>
@@ -97,18 +100,21 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Home section links */}
             {homeLinks.map((link) => {
               const Icon = link.icon;
               return (
-                <a
+                <Link
                   key={link.name}
                   href={link.href}
                   className="group relative flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
+                  scroll={false}
                 >
                   <Icon className="h-4 w-4" />
                   <span>{link.name}</span>
                   <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
-                </a>
+                </Link>
               );
             })}
           </nav>
@@ -194,6 +200,7 @@ export default function Navbar() {
           >
             <div className="container mx-auto p-4">
               <nav className="space-y-2">
+                {/* Main nav */}
                 {navLinks.map((link) => {
                   const Icon = link.icon;
                   return (
@@ -202,6 +209,7 @@ export default function Navbar() {
                       href={link.href}
                       className="flex items-center space-x-3 rounded-lg p-3 text-sm font-medium hover:bg-accent"
                       onClick={() => setIsOpen(false)}
+                      scroll={false}
                     >
                       <Icon className="h-5 w-5 text-muted-foreground" />
                       <div>
@@ -213,19 +221,21 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
-                {/* Home Section Links */}
+
+                {/* Home section links */}
                 {homeLinks.map((link) => {
                   const Icon = link.icon;
                   return (
-                    <a
+                    <Link
                       key={link.name}
                       href={link.href}
                       className="flex items-center space-x-3 rounded-lg p-3 text-sm font-medium hover:bg-accent"
                       onClick={() => setIsOpen(false)}
+                      scroll={false}
                     >
                       <Icon className="h-5 w-5 text-muted-foreground" />
                       <span>{link.name}</span>
-                    </a>
+                    </Link>
                   );
                 })}
               </nav>
