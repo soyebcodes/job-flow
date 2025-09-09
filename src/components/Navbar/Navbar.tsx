@@ -1,39 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import {
-  Menu,
-  X,
-  Sun,
-  Moon,
-  Bot,
-  Briefcase,
-  FileText,
-  BookOpen,
-} from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Sun, Moon, Bot, Briefcase, FileText } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  useUser,
+  SignInButton,
+  SignOutButton,
+  SignUpButton,
+} from "@clerk/nextjs";
 
 export default function Navbar() {
-  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const { setTheme, theme } = useTheme();
+  const { theme, setTheme } = useTheme();
+  const { isSignedIn, user } = useUser();
 
   const navLinks = [
     {
-      name: "AI Resume Builder",
+      name: "AI Resume Analyzer",
       href: "/resumes",
       icon: FileText,
-      description: "Build professional resumes with AI",
+      description: "Analyze professional resumes with AI",
     },
     {
       name: "Job Tracker",
@@ -41,18 +37,22 @@ export default function Navbar() {
       icon: Briefcase,
       description: "Track your job applications",
     },
-    {
-      name: "Resources",
-      href: "/resources",
-      icon: BookOpen,
-      description: "Career development resources",
-    },
   ];
+
+  if (isSignedIn) {
+    navLinks.push({
+      name: "Dashboard",
+      href: "/dashboard",
+      icon: Bot,
+      description: "Your personalized dashboard",
+    });
+  }
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-white transition-transform group-hover:scale-105">
               <Bot className="h-5 w-5" />
@@ -62,6 +62,7 @@ export default function Navbar() {
             </span>
           </Link>
 
+          {/* Desktop Links */}
           <nav className="hidden lg:flex items-center space-x-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -79,6 +80,7 @@ export default function Navbar() {
             })}
           </nav>
 
+          {/* Desktop Right */}
           <div className="hidden lg:flex items-center space-x-3">
             {/* Theme Toggle */}
             <DropdownMenu>
@@ -105,44 +107,39 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {session ? (
+            {isSignedIn ? (
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
                   <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
-                    {session.user?.name?.charAt(0).toUpperCase()}
+                    {user?.firstName?.charAt(0)}
                   </div>
                   <span className="text-sm font-medium">
-                    Hi, {session.user?.name}
+                    Hi, {user?.firstName}
                   </span>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => signOut()}
-                  className="h-9"
-                >
-                  Sign Out
-                </Button>
+                <SignOutButton>
+                  <Button variant="outline" size="sm" className="h-9">
+                    Sign Out
+                  </Button>
+                </SignOutButton>
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link href="/login">
+                <SignInButton>
                   <Button variant="ghost" size="sm" className="h-9">
                     Sign In
                   </Button>
-                </Link>
-                <Link href="/register">
-                  <Button
-                    size="sm"
-                    className="h-9 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  >
+                </SignInButton>
+                <SignUpButton>
+                  <Button variant="outline" size="sm" className="h-9">
                     Sign Up
                   </Button>
-                </Link>
+                </SignUpButton>
               </div>
             )}
           </div>
 
+          {/* Mobile menu button */}
           <button
             className="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg hover:bg-accent"
             onClick={() => setIsOpen(!isOpen)}
@@ -152,6 +149,7 @@ export default function Navbar() {
         </div>
       </header>
 
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -162,7 +160,6 @@ export default function Navbar() {
             className="fixed inset-x-0 top-16 z-40 bg-background/95 backdrop-blur-md border-b lg:hidden"
           >
             <div className="container mx-auto p-4">
-              {/* Mobile Nav Links */}
               <nav className="space-y-2">
                 {navLinks.map((link) => {
                   const Icon = link.icon;
@@ -185,85 +182,74 @@ export default function Navbar() {
                 })}
               </nav>
 
-              {/* Mobile Theme Toggle */}
-              <div className="mt-4 pt-4 border-t">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Theme</span>
-                  <div className="flex items-center space-x-1">
-                    <Button
-                      variant={theme === "light" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setTheme("light")}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Sun className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={theme === "dark" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setTheme("dark")}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Moon className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={theme === "system" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setTheme("system")}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Bot className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+              {/* Theme Toggle Mobile */}
+              <div className="mt-4 pt-4 border-t flex justify-center space-x-2">
+                <Button
+                  variant={theme === "light" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setTheme("light")}
+                  className="h-8 w-8 p-0"
+                >
+                  <Sun className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={theme === "dark" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setTheme("dark")}
+                  className="h-8 w-8 p-0"
+                >
+                  <Moon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={theme === "system" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setTheme("system")}
+                  className="h-8 w-8 p-0"
+                >
+                  <Bot className="h-4 w-4" />
+                </Button>
               </div>
 
-              {/* Mobile Auth Section */}
+              {/* Auth Section Mobile */}
               <div className="mt-4 pt-4 border-t space-y-3">
-                {session ? (
+                {isSignedIn ? (
                   <>
                     <div className="flex items-center space-x-3">
                       <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium">
-                        {session.user?.name?.charAt(0).toUpperCase()}
+                        {user?.firstName?.charAt(0)}
                       </div>
-                      <span className="font-medium">
-                        Hi, {session.user?.name}
-                      </span>
+                      <span className="font-medium">Hi, {user?.firstName}</span>
                     </div>
-                    <Button
-                      variant="outline"
-                      className="w-full bg-transparent"
-                      onClick={() => {
-                        setIsOpen(false);
-                        signOut();
-                      }}
-                    >
-                      Sign Out
-                    </Button>
-                  </>
-                ) : (
-                  <div className="space-y-2">
-                    <Link
-                      href="/login"
-                      onClick={() => setIsOpen(false)}
-                      className="block"
-                    >
+                    <SignOutButton>
                       <Button
                         variant="outline"
                         className="w-full bg-transparent"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Sign Out
+                      </Button>
+                    </SignOutButton>
+                  </>
+                ) : (
+                  <div className="flex flex-col space-y-2">
+                    <SignInButton>
+                      <Button
+                        variant="ghost"
+                        className="w-full bg-transparent"
+                        onClick={() => setIsOpen(false)}
                       >
                         Sign In
                       </Button>
-                    </Link>
-                    <Link
-                      href="/register"
-                      onClick={() => setIsOpen(false)}
-                      className="block"
-                    >
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    </SignInButton>
+                    <SignUpButton>
+                      <Button
+                        variant="outline"
+                        className="w-full bg-transparent"
+                        onClick={() => setIsOpen(false)}
+                      >
                         Sign Up
                       </Button>
-                    </Link>
+                    </SignUpButton>
                   </div>
                 )}
               </div>

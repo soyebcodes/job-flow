@@ -1,13 +1,12 @@
-"use client";
+import { redirect } from "next/navigation";
+import { currentUser, getAuth } from "@clerk/nextjs/server";
 
-import { useEffect } from "react";
+export default async function Page() {
+  const user = await currentUser();
 
-export default function DashboardPage() {
-  useEffect(() => {
-    if (window.location.hash) {
-      history.replaceState(null, "", window.location.pathname);
-    }
-  }, []);
+  if (!user) {
+    redirect("/sign-in");
+  }
 
-  return <div>Your dashboard content here</div>;
+  return <div>Hello,: {user.fullName}</div>;
 }
