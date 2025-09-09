@@ -5,7 +5,19 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sun, Moon, Bot, Briefcase, FileText } from "lucide-react";
+import {
+  Menu,
+  X,
+  Sun,
+  Moon,
+  Bot,
+  Briefcase,
+  FileText,
+  ToolCaseIcon,
+  Info,
+  Star,
+  Search,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,10 +37,10 @@ export default function Navbar() {
   const { isSignedIn, user } = useUser();
 
   const homeLinks = [
-    { name: "Tools", href: "#tools" },
-    { name: "How it Works", href: "#how-it-works" },
-    { name: "Highlight", href: "#highlight" },
-    { name: "Job Search", href: "#job-search" },
+    { name: "Tools", href: "#tools", icon: ToolCaseIcon },
+    { name: "How it Works", href: "#how-it-works", icon: Info },
+    { name: "Highlight", href: "#highlight", icon: Star },
+    { name: "Job Search", href: "#job-search", icon: Search },
   ];
 
   const navLinks = [
@@ -85,16 +97,20 @@ export default function Navbar() {
                 </Link>
               );
             })}
-            {homeLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="group relative flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
-              >
-                {link.name}
-                <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
-              </a>
-            ))}
+            {homeLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="group relative flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{link.name}</span>
+                  <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
+                </a>
+              );
+            })}
           </nav>
 
           {/* Desktop Right */}
@@ -197,16 +213,21 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
-                {homeLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="flex items-center space-x-3 rounded-lg p-3 text-sm font-medium hover:bg-accent"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.name}
-                  </a>
-                ))}
+                {/* Home Section Links */}
+                {homeLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      className="flex items-center space-x-3 rounded-lg p-3 text-sm font-medium hover:bg-accent"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Icon className="h-5 w-5 text-muted-foreground" />
+                      <span>{link.name}</span>
+                    </a>
+                  );
+                })}
               </nav>
 
               {/* Theme Toggle Mobile */}
