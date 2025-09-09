@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@supabase/supabase-js";
 import { PdfReader } from "pdfreader";
+import { ensureDBUser } from "@/lib/ensureDbUser"; // Clerk → Prisma bridge
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,8 +11,9 @@ const supabase = createClient(
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    // ✅ Clerk auth
+    const user = await ensureDBUser();
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing resume ID" }, { status: 400 });
     }
 
+    // Fetch resume
     const resume = await prisma.resume.findUnique({
       where: { id: resumeId },
     });
@@ -30,6 +31,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
+    // ✅ Security check: only owner can analyze
+    if (resume.userId !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Download file from Supabase
     const { data: fileData, error: downloadError } = await supabase.storage
       .from("resumes")
       .download(resume.fileUrl);
@@ -61,6 +68,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // Send text to external AI service
     const prompt = encodeURIComponent(
       `You're a professional resume reviewer. Please analyze the following resume and suggest 2–3 specific improvements to make it more effective for job applications:\n\n${parsedText}`
     );
@@ -68,6 +76,14 @@ export async function POST(req: Request) {
     const response = await fetch(
       `https://text.pollinations.ai/prompt/${prompt}`
     );
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: "AI analysis service failed" },
+        { status: 500 }
+      );
+    }
+
     const suggestions = await response.text();
 
     return NextResponse.json({ analysis: suggestions });

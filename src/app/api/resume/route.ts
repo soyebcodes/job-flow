@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@supabase/supabase-js";
+import { ensureDBUser } from "@/lib/ensureDbUser"; // 🔑 Clerk → Prisma bridge
 
 const supabaseServer = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,22 +16,25 @@ interface Resume {
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
+    // Ensure Clerk user exists in DB
+    const user = await ensureDBUser();
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Fetch resumes for this user
     const resumes = await prisma.resume.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       orderBy: { createdAt: "desc" },
     });
 
+    // Sign each file URL with Supabase
     const signedResumes = await Promise.all(
       resumes.map(async (resume: Resume) => {
         const { data } = await supabaseServer.storage
           .from("resumes")
-          .createSignedUrl(resume.fileUrl, 60 * 60);
+          .createSignedUrl(resume.fileUrl, 60 * 60); // 1h expiration
+
         return {
           id: resume.id,
           createdAt: resume.createdAt,

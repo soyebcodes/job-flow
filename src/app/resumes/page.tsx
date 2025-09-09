@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { signIn, useSession } from "next-auth/react";
+import { useUser, SignInButton } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import AnalysisModal from "@/components/AnalysisModal/AnalysisModal";
 
@@ -15,7 +15,7 @@ interface Resume {
 }
 
 export default function ResumeManagerPage() {
-  const { data: session, status } = useSession();
+  const { isSignedIn, user } = useUser();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -25,8 +25,8 @@ export default function ResumeManagerPage() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (session) fetchResumes();
-  }, [session]);
+    if (isSignedIn) fetchResumes();
+  }, [isSignedIn]);
 
   const fetchResumes = async () => {
     setLoading(true);
@@ -37,7 +37,6 @@ export default function ResumeManagerPage() {
         setResumes([]);
       } else {
         const data: { resumes: Resume[] } = await res.json();
-
         if (data.resumes) setResumes(data.resumes);
         else setMessage("No resumes found.");
       }
@@ -60,7 +59,6 @@ export default function ResumeManagerPage() {
       const res = await fetch("/api/resume/upload", {
         method: "POST",
         body: formData,
-        credentials: "include",
       });
       const data = await res.json();
 
@@ -77,6 +75,7 @@ export default function ResumeManagerPage() {
       form.reset();
     }
   };
+
   const handleDelete = async (resumeId: string) => {
     if (!confirm("Are you sure you want to delete this resume?")) return;
 
@@ -97,6 +96,37 @@ export default function ResumeManagerPage() {
     }
   };
 
+  const handleUpdate = async (resumeId: string) => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "application/pdf";
+    fileInput.onchange = async () => {
+      if (!fileInput.files || fileInput.files.length === 0) return;
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("resumeId", resumeId); // include resumeId for the update route
+
+      try {
+        const res = await fetch("/api/resume/update", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+
+        if (data.url) {
+          setMessage("Resume updated successfully!");
+          fetchResumes();
+        } else {
+          setMessage(data.error || "Update failed");
+        }
+      } catch (err: any) {
+        setMessage(err.message || "Update failed");
+      }
+    };
+    fileInput.click();
+  };
+
   const handleAnalyze = async (resumeId: string) => {
     setAnalyzingId(resumeId);
     setAnalysisResult(null);
@@ -105,7 +135,6 @@ export default function ResumeManagerPage() {
         method: "POST",
         body: JSON.stringify({ resumeId }),
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
       });
       const data = await res.json();
       if (data.analysis) {
@@ -121,7 +150,7 @@ export default function ResumeManagerPage() {
     }
   };
 
-  if (status === "loading") {
+  if (loading && isSignedIn) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-green-600"></div>
@@ -132,7 +161,7 @@ export default function ResumeManagerPage() {
     );
   }
 
-  if (!session) {
+  if (!isSignedIn) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center px-4">
         <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100 mb-2">
@@ -141,12 +170,11 @@ export default function ResumeManagerPage() {
         <p className="text-zinc-600 dark:text-zinc-400">
           You must be logged in to view and upload resumes.
         </p>
-        <Button
-          onClick={() => signIn()}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-        >
-          Login
-        </Button>
+        <SignInButton>
+          <Button className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+            Login
+          </Button>
+        </SignInButton>
       </div>
     );
   }
@@ -192,9 +220,7 @@ export default function ResumeManagerPage() {
       </Card>
 
       {/* Resume List */}
-      {loading ? (
-        <p className="text-center text-gray-500">Loading resumes...</p>
-      ) : resumes.length === 0 ? (
+      {resumes.length === 0 ? (
         <p className="text-center text-gray-500">No resumes uploaded yet.</p>
       ) : (
         <div className="grid gap-4">
@@ -226,6 +252,13 @@ export default function ResumeManagerPage() {
                       >
                         Download
                       </a>
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                      onClick={() => handleUpdate(resume.id)}
+                    >
+                      Update
                     </Button>
 
                     <Button

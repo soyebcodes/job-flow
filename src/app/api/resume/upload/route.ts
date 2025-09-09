@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { ensureDBUser } from "@/lib/ensureDbUser"; // Clerk → Prisma bridge
 
 // Server-side Supabase client using SERVICE ROLE key
 const supabaseServer: SupabaseClient = createClient(
@@ -17,18 +16,16 @@ interface SignedUrlData {
 
 export async function POST(req: Request) {
   try {
-    // Get NextAuth session
-    const session = await getServerSession(authOptions);
-
-    // Guard: make sure user and id exist
-    if (!session?.user?.id || !session.user.email) {
+    // ✅ Ensure Clerk user exists in DB
+    const user = await ensureDBUser();
+    if (!user) {
       return NextResponse.json(
         { error: "Unauthorized. Session missing." },
         { status: 401 }
       );
     }
 
-    const userId: string = session.user.id;
+    const userId: string = user.id;
 
     // Parse uploaded file
     const formData = await req.formData();
@@ -71,7 +68,7 @@ export async function POST(req: Request) {
     // Save resume record in Prisma
     await prisma.resume.create({
       data: {
-        user: { connect: { id: userId } },
+        userId, // Clerk-linked user
         fileUrl: filePath,
       },
     });
