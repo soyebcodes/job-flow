@@ -53,14 +53,14 @@ export default function DashboardPage() {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const jobsRes = await fetch("/api/jobs");
+      const jobsRes = await fetch("/api/jobs"); // Ensure this API returns jobs for the current user
       const jobsData = await jobsRes.json();
 
-      const resumesRes = await fetch("/api/resume");
+      const resumesRes = await fetch("/api/resume"); // Ensure this API returns resumes for current user
       const resumesData = await resumesRes.json();
 
       setJobs(Array.isArray(jobsData) ? jobsData : []);
-      setResumes(Array.isArray(resumesData) ? resumesData : []);
+      setResumes(Array.isArray(resumesData.resumes) ? resumesData.resumes : []);
     } catch (err: any) {
       setMessage(err.message || "Failed to load dashboard data.");
     } finally {
