@@ -6,7 +6,10 @@ import { GiBullseye } from "react-icons/gi";
 
 const AiToolsHighlight = () => {
   return (
-    <section className="py-24 bg-gradient-to-br from-slate-50 via-white to-blue-50 mt-80">
+    <section
+      id="highlight"
+      className="py-24 bg-gradient-to-br from-slate-50 via-white to-blue-50 mt-80"
+    >
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-20">

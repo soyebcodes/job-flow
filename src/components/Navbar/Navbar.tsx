@@ -24,6 +24,13 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const { isSignedIn, user } = useUser();
 
+  const homeLinks = [
+    { name: "Tools", href: "#tools" },
+    { name: "How it Works", href: "#how-it-works" },
+    { name: "Highlight", href: "#highlight" },
+    { name: "Job Search", href: "#job-search" },
+  ];
+
   const navLinks = [
     {
       name: "AI Resume Analyzer",
@@ -78,6 +85,16 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            {homeLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="group relative flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
+              >
+                {link.name}
+                <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
+              </a>
+            ))}
           </nav>
 
           {/* Desktop Right */}
@@ -180,6 +197,16 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
+                {homeLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="flex items-center space-x-3 rounded-lg p-3 text-sm font-medium hover:bg-accent"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                ))}
               </nav>
 
               {/* Theme Toggle Mobile */}

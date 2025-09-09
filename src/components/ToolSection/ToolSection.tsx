@@ -102,7 +102,7 @@ const ToolSection = () => {
   };
   return (
     <>
-      <section className="relative mt-20">
+      <section id="tools" className="relative mt-20">
         <div className="max-w-7xl mx-auto relative">
           {/* Top Tabs - Now sticky */}
           <div className="sticky top-24 left-0 z-40 flex">

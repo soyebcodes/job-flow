@@ -65,7 +65,7 @@ const HowItWorks = () => {
     stepsData.find((step) => step.id === activeStep) || stepsData[0];
 
   return (
-    <section className="mt-20">
+    <section id="how-it-works" className="mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-16">
           How it Works

@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+html {
+  scroll-behavior: smooth;
+}
+
+section {
+  scroll-margin-top: 64px; /* Adjust to your navbar height */
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -111,7 +119,6 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
-
 
 @layer base {
   * {
