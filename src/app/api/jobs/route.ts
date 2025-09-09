@@ -1,39 +1,27 @@
+// app/api/jobs/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // adjust path as needed
-import { currentUser } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import { ensureDBUser } from "@/lib/ensureDbUser";
 
-// POST /api/jobs
+// Create a new job
 export async function POST(req: Request) {
-  const user = await currentUser();
-
-  if (!user?.id) {
+  // Ensure user exists in DB
+  const user = await ensureDBUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
-  const { position, status, company, description } = body;
-
   try {
-    // Optional: check if user exists in your DB
-    let dbUser = await prisma.user.findUnique({ where: { clerkId: user.id } });
-    if (!dbUser) {
-      // create the user in your DB if it doesn't exist
-      dbUser = await prisma.user.create({
-        data: {
-          clerkId: user.id,
-          email: user.email || "",
-          name: user.firstName || "",
-        },
-      });
-    }
+    const body = await req.json();
+    const { position, company, status, description } = body;
 
     const job = await prisma.job.create({
       data: {
+        userId: user.id,
         position,
         company,
         status,
         description,
-        userId: dbUser.id,
         createdAt: new Date(),
       },
     });
@@ -48,22 +36,25 @@ export async function POST(req: Request) {
   }
 }
 
-// GET /api/jobs
+// Get all jobs for the logged-in user
 export async function GET() {
-  const user = await currentUser();
-
-  if (!user?.id) {
+  const user = await ensureDBUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const dbUser = await prisma.user.findUnique({
-    where: { clerkId: user.id },
-    include: { jobs: true },
-  });
+  try {
+    const jobs = await prisma.job.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
 
-  if (!dbUser) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json(jobs);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to fetch jobs" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json(dbUser.jobs);
 }
