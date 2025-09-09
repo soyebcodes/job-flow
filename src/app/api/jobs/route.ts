@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // adjust path as needed
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { currentUser } from "@clerk/nextjs/server";
+
+// POST /api/jobs
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
+  const user = await currentUser();
+
+  if (!user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -12,12 +14,17 @@ export async function POST(req: Request) {
   const { position, status, company, description } = body;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    // Optional: check if user exists in your DB
+    let dbUser = await prisma.user.findUnique({ where: { clerkId: user.id } });
+    if (!dbUser) {
+      // create the user in your DB if it doesn't exist
+      dbUser = await prisma.user.create({
+        data: {
+          clerkId: user.id,
+          email: user.email || "",
+          name: user.firstName || "",
+        },
+      });
     }
 
     const job = await prisma.job.create({
@@ -26,7 +33,7 @@ export async function POST(req: Request) {
         company,
         status,
         description,
-        userId: user.id,
+        userId: dbUser.id,
         createdAt: new Date(),
       },
     });
@@ -41,20 +48,22 @@ export async function POST(req: Request) {
   }
 }
 
+// GET /api/jobs
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
+  const user = await currentUser();
+
+  if (!user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
+  const dbUser = await prisma.user.findUnique({
+    where: { clerkId: user.id },
     include: { jobs: true },
   });
 
-  if (!user) {
+  if (!dbUser) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  return NextResponse.json(user.jobs);
+  return NextResponse.json(dbUser.jobs);
 }
