@@ -14,7 +14,7 @@ import {
 import { JobForm } from "@/types/job";
 import AddJobModal from "./AddJobModal";
 import MatchModal from "./MatchModal";
-import { signIn, useSession } from "next-auth/react";
+import { useUser, SignInButton } from "@clerk/nextjs";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<JobForm[]>([]);
@@ -24,12 +24,20 @@ export default function JobsPage() {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
 
+  const { isSignedIn, user } = useUser();
+
+  // Fetch jobs when user is signed in
   useEffect(() => {
-    if (session) fetchJobs();
-  }, [session]);
+    if (isSignedIn) {
+      fetchJobs().finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [isSignedIn]);
 
+  // Filter jobs based on status and search
   useEffect(() => {
     let filtered = jobs;
 
@@ -76,7 +84,7 @@ export default function JobsPage() {
     setShowMatchModal(true);
   };
 
-  if (status === "loading") {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-green-600"></div>
@@ -87,7 +95,7 @@ export default function JobsPage() {
     );
   }
 
-  if (!session) {
+  if (!isSignedIn) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center px-4">
         <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100 mb-2">
@@ -96,12 +104,11 @@ export default function JobsPage() {
         <p className="text-zinc-600 dark:text-zinc-400">
           You must be logged in to view this page.
         </p>
-        <Button
-          onClick={() => signIn()}
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-        >
-          Login
-        </Button>
+        <SignInButton>
+          <Button className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+            Login
+          </Button>
+        </SignInButton>
       </div>
     );
   }
