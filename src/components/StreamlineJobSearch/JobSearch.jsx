@@ -1,12 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
+
 const JobSearch = () => {
   const steps = [
     {
       id: 1,
       title: "Find & Save",
       description:
-        "With the Teal Chrome Extension, you have the ability to save directly from the job board and it will appear in your tracker.",
+        "With the JobFlow Chrome Extension, you have the ability to save directly from the job board and it will appear in your tracker.",
       image: "/job-search-image/search-1.webp",
       alt: "Find & Save",
     },
@@ -48,43 +49,54 @@ const JobSearch = () => {
   };
 
   return (
-    <section className="bg-white py-16 mt-8">
+    <section className="bg-white dark:bg-gray-900 py-16 mt-8 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 text-center">
         {/* Title */}
-        <h2 className="text-3xl lg:text-5xl font-semibold mb-20">
+        <h2 className="text-3xl lg:text-5xl font-bold mb-20 text-gray-900 dark:text-white">
           Streamline your Job Search
         </h2>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 xl:gap-30 gap-16 ">
+        <div className="grid grid-cols-1 md:grid-cols-4 xl:gap-20 gap-16">
           {steps.map((step) => (
-            <div
+            <motion.div
               key={step.id}
-              className="flex flex-col items-center gap-4 relative"
+              className="flex flex-col items-center gap-4 relative group"
+              initial="hidden"
+              whileInView="visible"
+              variants={itemVariants}
+              viewport={{ once: true }}
             >
-              <span className=" absolute -top-5 bg-[#005149] text-white p-3 w-10 h-10 flex justify-center items-center rounded-full font-bold">
+              {/* Step Number */}
+              <span className="absolute -top-5 bg-gradient-to-r from-blue-600 to-teal-600 text-white p-3 w-12 h-12 flex justify-center items-center rounded-full font-bold shadow-md group-hover:scale-110 transition-transform duration-300">
                 {step.id}
               </span>
-              <div className="mb-4">
+
+              {/* Image */}
+              <div className="mb-4 w-full">
                 <img
                   src={step.image}
                   alt={step.alt}
-                  className="rounded-lg shadow-md bg-[#e9f3f3] pt-10"
+                  className="rounded-lg shadow-lg bg-[#e9f3f3] dark:bg-gray-800 p-4 transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-              <h3 className="text-xl xl:text-2xl font-semibold mb-2">
+
+              {/* Title */}
+              <h3 className="text-xl xl:text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
                 {step.title}
               </h3>
-              <p className="text-gray-600  font-medium xl:text-md">
+
+              {/* Description */}
+              <p className="text-gray-600 dark:text-gray-300 font-medium xl:text-md">
                 {step.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* Button */}
         <motion.div variants={itemVariants}>
-          <button className="px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-[#f5b501] text-lg sm:text-xl font-bold hover:shadow-xl hover:scale-105 transition-all duration-300 mt-16">
+          <button className="px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-[#f5b501] text-lg sm:text-xl font-bold hover:shadow-2xl hover:scale-110 transition-all duration-300 mt-16 text-gray-900">
             Sign Up! It&apos;s 100% Free
           </button>
         </motion.div>

@@ -100,15 +100,15 @@ const Footer = () => {
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center space-x-2">
                     <MapPin className="h-4 w-4" />
-                    <span>San Francisco, CA</span>
+                    <span>Dhaka, Bangladesh</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Phone className="h-4 w-4" />
-                    <span>+1 (555) 123-4567</span>
+                    <span>+88012254445625</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Mail className="h-4 w-4" />
-                    <span>hello@aijobtacker.com</span>
+                    <span>soyeb.islam117@gmail.com</span>
                   </div>
                 </div>
               </motion.div>

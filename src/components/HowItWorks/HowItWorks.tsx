@@ -11,10 +11,9 @@ const stepsData = [
       "Use the right keywords from job descriptions to highlight your qualifications on your resume and set up your job tracking goals.",
     image: "https://placehold.co/800x600/f5b501/2427ab?text=Step+1",
     stepLabel: "Sign Up!",
-    icon: <Edit3 />,
-    bgColor: "bg-yellow-400",
-    titleColor: "text-gray-900",
-    descriptionColor: "text-gray-800",
+    icon: <Edit3 className="w-6 h-6" />,
+    gradient:
+      "from-yellow-400 to-yellow-600 dark:from-yellow-500 dark:to-yellow-700",
   },
   {
     id: 2,
@@ -23,10 +22,9 @@ const stepsData = [
       "Browse job boards and use our handy browser extension to save opportunities directly to your job tracker in one click.",
     image: "https://placehold.co/800x600/2427ab/f5b501?text=Step+2",
     stepLabel: "Search",
-    icon: <Search />,
-    bgColor: "bg-blue-800",
-    titleColor: "text-white",
-    descriptionColor: "text-blue-200",
+    icon: <Search className="w-6 h-6" />,
+    gradient:
+      "from-blue-500 to-indigo-700 dark:from-blue-600 dark:to-indigo-800",
   },
   {
     id: 3,
@@ -35,10 +33,9 @@ const stepsData = [
       "Optimize your resume for each job application. Our AI helps you match your skills to the job description, increasing your chances.",
     image: "https://placehold.co/800x600/333/fff?text=Step+3",
     stepLabel: "Apply",
-    icon: <CheckCircle />,
-    bgColor: "bg-gray-800",
-    titleColor: "text-white",
-    descriptionColor: "text-gray-300",
+    icon: <CheckCircle className="w-6 h-6" />,
+    gradient:
+      "from-green-500 to-emerald-700 dark:from-green-600 dark:to-emerald-800",
   },
   {
     id: 4,
@@ -47,17 +44,16 @@ const stepsData = [
       "Manage all your applications in one place, track your interview progress, and get insights to help you land your dream job faster.",
     image: "https://placehold.co/800x600/f0f0f0/333?text=Step+4",
     stepLabel: "Grow",
-    icon: <Zap />,
-    bgColor: "bg-gray-100",
-    titleColor: "text-gray-900",
-    descriptionColor: "text-gray-600",
+    icon: <Zap className="w-6 h-6" />,
+    gradient:
+      "from-pink-500 to-purple-700 dark:from-pink-600 dark:to-purple-800",
   },
 ];
 
 const HowItWorks = () => {
   const [activeStep, setActiveStep] = React.useState(1);
 
-  const handleStepClick = (stepId: React.SetStateAction<number>) => {
+  const handleStepClick = (stepId: number) => {
     setActiveStep(stepId);
   };
 
@@ -65,31 +61,32 @@ const HowItWorks = () => {
     stepsData.find((step) => step.id === activeStep) || stepsData[0];
 
   return (
-    <section id="how-it-works" className="mt-20">
+    <section id="how-it-works" className="mt-20 mb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-16">
+        {/* Section Title */}
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-16">
           How it Works
         </h2>
 
-        {/* Main content display */}
+        {/* Active Step Display */}
         <div
-          className={`${currentStepData.bgColor} rounded-2xl p-6 md:p-10 transition-colors duration-500 ease-in-out`}
+          className={`bg-gradient-to-br ${currentStepData.gradient} rounded-2xl p-6 md:p-10 transition-all duration-500 ease-in-out shadow-lg`}
         >
           <AnimatePresence mode="wait">
             <motion.div
               key={activeStep}
               className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.4 }}
             >
-              {/* Image Section */}
+              {/* Image */}
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="overflow-hidden rounded-lg shadow-md"
+                className="overflow-hidden rounded-lg shadow-2xl"
               >
                 <img
                   src={currentStepData.image}
@@ -98,21 +95,17 @@ const HowItWorks = () => {
                 />
               </motion.div>
 
-              {/* Text Content Section */}
+              {/* Text */}
               <motion.div
-                className="text-left"
+                className="text-left text-white"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <h3
-                  className={`text-3xl md:text-4xl font-bold ${currentStepData.titleColor} transition-colors duration-500`}
-                >
+                <h3 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg">
                   {currentStepData.title}
                 </h3>
-                <p
-                  className={`mt-4 ${currentStepData.descriptionColor} text-lg transition-colors duration-500`}
-                >
+                <p className="text-lg text-gray-100 dark:text-gray-200 drop-shadow">
                   {currentStepData.description}
                 </p>
               </motion.div>
@@ -125,25 +118,29 @@ const HowItWorks = () => {
           <div className="flex items-center w-full">
             {stepsData.map((step, index) => (
               <React.Fragment key={step.id}>
-                {/* Step Point */}
+                {/* Step Circle */}
                 <div
                   className="flex flex-col items-center cursor-pointer group"
                   onClick={() => handleStepClick(step.id)}
                   style={{ flexShrink: 0 }}
                 >
                   <motion.div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center border-2 font-bold text-lg shadow-md transition-all duration-300 ${
                       activeStep >= step.id
-                        ? "bg-gray-800 border-gray-800 text-white"
-                        : "bg-white border-gray-300 text-gray-400"
+                        ? "bg-gradient-to-br " +
+                          step.gradient +
+                          " text-white border-transparent"
+                        : "bg-white dark:bg-gray-800 border-gray-300 text-gray-400 dark:text-gray-500"
                     }`}
                     whileHover={{ scale: 1.1 }}
                   >
-                    <span className="font-bold text-lg">{step.id}</span>
+                    {step.icon}
                   </motion.div>
                   <p
                     className={`mt-3 font-semibold transition-colors duration-300 ${
-                      activeStep >= step.id ? "text-gray-900" : "text-gray-500"
+                      activeStep >= step.id
+                        ? "text-gray-900 dark:text-gray-100"
+                        : "text-gray-500 dark:text-gray-400"
                     }`}
                   >
                     {step.stepLabel}
@@ -152,9 +149,9 @@ const HowItWorks = () => {
 
                 {/* Connector Line */}
                 {index < stepsData.length - 1 && (
-                  <div className="w-full flex-1 h-1 bg-gray-200 mx-5">
+                  <div className="w-full flex-1 h-1 bg-gray-200 dark:bg-gray-700 mx-5">
                     <motion.div
-                      className="h-full bg-gray-800"
+                      className="h-full bg-gray-900 dark:bg-gray-100"
                       initial={{ width: "0%" }}
                       animate={{ width: activeStep > step.id ? "100%" : "0%" }}
                       transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -165,9 +162,10 @@ const HowItWorks = () => {
             ))}
           </div>
         </div>
-        {/* CTA Button */}
+
+        {/* CTA */}
         <div className="mt-12">
-          <button className="bg-[#f5b501] text-gray-900 font-bold px-8 py-4 rounded-full text-lg transition-all duration-300  hover:shadow-xl hover:scale-105">
+          <button className="bg-[#f5b501] text-gray-900 font-bold px-8 py-4 rounded-full text-lg transition-all duration-300 hover:shadow-2xl hover:scale-105">
             Get Started for Free
           </button>
         </div>

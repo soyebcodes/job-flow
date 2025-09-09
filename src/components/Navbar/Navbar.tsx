@@ -109,7 +109,6 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   className="group relative flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
-                  scroll={false}
                 >
                   <Icon className="h-4 w-4" />
                   <span>{link.name}</span>
@@ -231,7 +230,6 @@ export default function Navbar() {
                       href={link.href}
                       className="flex items-center space-x-3 rounded-lg p-3 text-sm font-medium hover:bg-accent"
                       onClick={() => setIsOpen(false)}
-                      scroll={false}
                     >
                       <Icon className="h-5 w-5 text-muted-foreground" />
                       <span>{link.name}</span>
