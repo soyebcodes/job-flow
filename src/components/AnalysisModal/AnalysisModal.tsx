@@ -84,8 +84,12 @@ export default function AnalysisModal({
         </div>
 
         <div className="mt-2 flex justify-end items-center gap-2">
-          <Button onClick={handleCopy} variant="secondary" className="text-sm">
-            {copied ? "Copied!" : "Copy Suggestion"}
+          <Button
+            onClick={handleCopy}
+            variant={copied ? "default" : "secondary"}
+            className="text-sm"
+          >
+            {copied ? "✅ Copied!" : "Copy Suggestion"}
           </Button>
         </div>
 

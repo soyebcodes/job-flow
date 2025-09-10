@@ -62,7 +62,7 @@ export default function MatchModal({ open, onClose, jobId }: MatchModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Match Resume to Job</DialogTitle>
         </DialogHeader>
