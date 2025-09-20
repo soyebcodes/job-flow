@@ -51,7 +51,7 @@ export default function Navbar() {
       description: "Analyze professional resumes with AI",
     },
     {
-      name: "Job Tracker",
+      name: "Job Application Tracker",
       href: "/jobs",
       icon: Briefcase,
       description: "Track your job applications",
@@ -78,7 +78,7 @@ export default function Navbar() {
               <Bot className="h-5 w-5" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              AI JobTracker
+              JOB FLOW
             </span>
           </Link>
 

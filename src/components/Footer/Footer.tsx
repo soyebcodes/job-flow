@@ -25,7 +25,7 @@ const Footer = () => {
       title: "Product",
       links: [
         { name: "AI Resume Builder", href: "/resume-builder", icon: FileText },
-        { name: "Job Tracker", href: "/jobs", icon: BarChart3 },
+        { name: "Job Application Tracker", href: "/jobs", icon: BarChart3 },
         { name: "Dashboard", href: "/dashboard", icon: Users },
         { name: "Resources", href: "/resources", icon: Brain },
       ],
@@ -86,7 +86,7 @@ const Footer = () => {
                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-pulse" />
                   </div>
                   <span className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                    AI Job Tracker
+                    JOBFLOW
                   </span>
                 </Link>
 
@@ -108,7 +108,7 @@ const Footer = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Mail className="h-4 w-4" />
-                    <span>soyeb.islam117@gmail.com</span>
+                    <span>contact@jobflow.com</span>
                   </div>
                 </div>
               </motion.div>
