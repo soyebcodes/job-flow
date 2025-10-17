@@ -38,7 +38,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="max-w-full w-full overflow-x-hidden">
+            <div className="max-w-full w-full">
               <Navbar />
               {children}
               <Footer />
