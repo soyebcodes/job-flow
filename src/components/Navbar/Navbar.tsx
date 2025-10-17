@@ -69,8 +69,8 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+      {/* ✅ Sticky Header */}
+      <header className="sticky top-0 z-[100] w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
@@ -82,9 +82,8 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Links */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-1">
-            {/* Main nav */}
             {navLinks.map((link) => {
               const Icon = link.icon;
               return (
@@ -100,8 +99,6 @@ export default function Navbar() {
                 </Link>
               );
             })}
-
-            {/* Home section links */}
             {homeLinks.map((link) => {
               const Icon = link.icon;
               return (
@@ -177,7 +174,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu toggle */}
           <button
             className="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg hover:bg-accent"
             onClick={() => setIsOpen(!isOpen)}
@@ -187,7 +184,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* ✅ Mobile Menu (Fixed to below navbar) */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -195,11 +192,10 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="fixed inset-x-0 top-16 z-40 bg-background/95 backdrop-blur-md border-b lg:hidden"
+            className="fixed inset-x-0 top-16 z-[90] bg-background/95 backdrop-blur-md border-b lg:hidden"
           >
             <div className="container mx-auto p-4">
               <nav className="space-y-2">
-                {/* Main nav */}
                 {navLinks.map((link) => {
                   const Icon = link.icon;
                   return (
@@ -220,8 +216,6 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
-
-                {/* Home section links */}
                 {homeLinks.map((link) => {
                   const Icon = link.icon;
                   return (
@@ -238,7 +232,7 @@ export default function Navbar() {
                 })}
               </nav>
 
-              {/* Theme Toggle Mobile */}
+              {/* Mobile Theme Toggle */}
               <div className="mt-4 pt-4 border-t flex justify-center flex-wrap gap-2">
                 <Button
                   variant={theme === "light" ? "default" : "ghost"}
@@ -266,7 +260,7 @@ export default function Navbar() {
                 </Button>
               </div>
 
-              {/* Auth Section Mobile */}
+              {/* Mobile Auth */}
               <div className="mt-4 pt-4 border-t flex flex-col items-center gap-2">
                 {isSignedIn ? (
                   <>
