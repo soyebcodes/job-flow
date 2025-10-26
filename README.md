@@ -1,4 +1,4 @@
-# 🚀 AI Job Tracker
+# 🚀 Job Flow
 
 An AI-powered web application to help users **track job applications, analyze resumes, and match job descriptions with required skills**.  
 Built with **Next.js, TypeScript, Prisma, Supabase, and OpenAI API**.
